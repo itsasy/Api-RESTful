@@ -80,4 +80,58 @@ class UsersTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+
+    public function can_update_an_user()
+    {
+        $user = User::factory()->times(5)->create();
+
+        $this->assertDatabaseHas('users', [
+            'name' => $user[0]->name,
+            'email' => $user[0]->email,
+            'verified' => $user[0]->verified,
+            'admin' => $user[0]->admin
+        ]);
+
+        $user_update = [
+            'name' => 'Alex',
+            'email' => 'ale.maldo2@gmail.com',
+        ];
+
+        $response = $this->putJson(route('users.update', 1), $user_update);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'data' => [
+                    'name' => 'Alex',
+                    'email' => 'ale.maldo2@gmail.com',
+                    'verified' => $user[0]->verified,
+                    'admin' => $user[0]->admin
+                ]
+            ]);
+    }
+
+    /** @test */
+
+    public function can_delete_an_user()
+    {
+        $user = User::factory()->times(5)->create();
+
+        $this->assertDatabaseHas('users', [
+            'name' => $user[0]->name,
+            'email' => $user[0]->email,
+            'verified' => $user[0]->verified,
+            'admin' => $user[0]->admin
+        ]);
+
+        $response = $this->deleteJson(route('users.update', 1));
+
+        $this->assertDatabaseMissing('users', [
+            'id' => $user[0]->id
+        ]);
+
+        $response->assertStatus(204);
+
+    }
 }
