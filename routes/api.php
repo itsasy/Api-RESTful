@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Product\ProductController;
-use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::resource('users', UserController::class)->except(['create', 'edit']);
-Route::resource('products', ProductController::class)->only(['index', 'show']);
+Route::resource('users', User\UserController::class)->except(['create', 'edit']);
+Route::resource('products', Product\ProductController::class)->only(['index', 'show']);
+Route::resource('categories', Category\CategoryController::class)->except(['create', 'edit']);
+Route::resource('transactions', Transaction\TransactionController::class)->only(['index', 'show']);
