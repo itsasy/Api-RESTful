@@ -28,4 +28,56 @@ class UsersTest extends TestCase
             'admin' => $users[0]->admin,
         ]);
     }
+
+    /** @test */
+
+    public function can_create_a_new_user()
+    {
+        $user = [
+            'name' => 'Alexis',
+            'email' => 'ale.maldo@gmail.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'verified' => User::UNVERIFIED_USER,
+            'verification_token' => User::generateVerificationToken(),
+            'admin' => User::REGULAR_USER,
+        ];
+
+        $response = $this->postJson(route('users.store', $user));
+
+        $response->assertJson([
+            'data' => [
+                'name' => 'Alexis',
+                'email' => 'ale.maldo@gmail.com',
+                'verified' => User::UNVERIFIED_USER,
+                'admin' => User::REGULAR_USER,
+            ]
+        ]);
+
+        $this->assertDatabaseCount('users', 1);
+
+    }
+
+    /** @test */
+
+    public function can_see_an_users()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+
+        $response = $this->getJson(route('users.show', 1));
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'verified' => $user->verified,
+                'admin' => $user->admin,
+            ]
+        ]);
+    }
 }
