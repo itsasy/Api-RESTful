@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Traits\ApiResponder;
 
 class TransactionController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +19,7 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::all();
 
-        return response()->json(['data' => $transactions], 200);
+        return $this->showAll($transactions, 200);
     }
 
     /**
@@ -27,7 +30,7 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        return response()->json(['data' => $transaction], 200);
+        return $this->showOne($transaction, 200);
     }
 
 }

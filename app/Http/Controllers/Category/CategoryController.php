@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Category;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +20,7 @@ class CategoryController extends Controller
     {
         $categories = Category::all();
 
-        return response()->json(['data' => $categories], 200);
+        return $this->showAll($categories, 200);
     }
 
 
@@ -39,7 +42,8 @@ class CategoryController extends Controller
             'description' => $request->description
         ]);
 
-        return response()->json(['data' => $category], 201);
+        return $this->showOne($category, 201);
+
     }
 
     /**
@@ -50,7 +54,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return response()->json(['data' => $category], 200);
+        return $this->showOne($category, 200);
     }
 
     /**
@@ -75,7 +79,7 @@ class CategoryController extends Controller
 
         $category->save();
 
-        return response()->json(['data' => $category]);
+        return $this->showOne($category, 201);
     }
 
     /**
@@ -89,6 +93,6 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return response()->json(['data' => $category], 204);
+        return $this->showOne($category, 204);
     }
 }

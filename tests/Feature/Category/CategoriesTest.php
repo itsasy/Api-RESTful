@@ -76,7 +76,7 @@ class CategoriesTest extends TestCase
 
         $this->assertDatabaseHas('categories', $category_update);
 
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJson([
                 'data' => [
                     'name' => $category_update['name'],

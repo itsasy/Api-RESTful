@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Traits\ApiResponder;
 
 class ProductController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Display a listing of the resource.
      *
@@ -16,17 +19,17 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
-        return response()->json(['data' => $products], 200);
+        return $this->showAll($products, 200);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param Product $product
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(Product $product)
     {
-        return response()->json(['data' => $product], 200);
+        return $this->showOne($product, 200);
     }
 }

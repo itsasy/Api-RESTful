@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Buyer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Buyer;
+use App\Traits\ApiResponder;
 
 class BuyerController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +19,7 @@ class BuyerController extends Controller
     {
         $buyers = Buyer::has('transactions')->get();
 
-        return response()->json(['data' => $buyers], 200);
+        return $this->showAll($buyers, 200);
     }
 
     /**
@@ -30,7 +33,7 @@ class BuyerController extends Controller
         $buyer->has('transactions')
             ->findOrFail($buyer->id);
 
-        return response()->json(['data' => $buyer], 200);
+        return $this->showOne($buyer, 200);
     }
 
 }
