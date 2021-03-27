@@ -38,9 +38,6 @@ class UsersTest extends TestCase
             'email' => 'ale.maldo@gmail.com',
             'password' => 'password',
             'password_confirmation' => 'password',
-            'verified' => User::UNVERIFIED_USER,
-            'verification_token' => User::generateVerificationToken(),
-            'admin' => User::REGULAR_USER,
         ];
 
         $response = $this->postJson(route('users.store', $user));
@@ -56,6 +53,38 @@ class UsersTest extends TestCase
 
         $this->assertDatabaseCount('users', 1);
 
+    }
+
+    /** @test */
+
+    public function cannot_create_a_new_user_with_empty_fields()
+    {
+        $empty_user = [];
+
+        $response = $this->postJson(route('users.store'), $empty_user);
+
+        $response->assertSee([
+            'name' => 'The name field is required.',
+            'email' => 'The email field is required.',
+            'password' => 'The password field is required',
+        ]);
+    }
+
+    /** @test */
+
+    public function cannot_create_a_new_user_without_password_confirmation_field()
+    {
+        $user = [
+            'name' => 'Alexis',
+            'email' => 'ale.maldo@gmail.com',
+            'password' => 'password',
+        ];
+
+        $response = $this->postJson(route('users.store'), $user);
+
+        $response->assertSee([
+            'password' => 'The password confirmation does not match',
+        ]);
     }
 
     /** @test */
