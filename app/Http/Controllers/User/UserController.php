@@ -90,21 +90,15 @@ class UserController extends Controller
 
         if ($request->has('admin')) {
             if (!$user->isVerified()) {
-                return response()->json([
-                    'Error' => 'Only Verified users can modify the admin field',
-                    'code' => 409
-                ], 409);
+                return $this->errorResponse('Only Verified users can modify the admin field', 409);
             }
 
             $user->admin = $request->admin;
         }
 
         //Verifica si los atributos fueron modificados
-        if (!$user->isDirty()) {
-            return response()->json([
-                'Error' => 'You need to specify a different value to update',
-                'code' => 422
-            ], 422);
+        if ($user->isClean()) {
+            return $this->errorResponse('You need to specify a different value to update', 422);
         }
 
         $user->save();

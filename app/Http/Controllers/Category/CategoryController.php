@@ -71,10 +71,7 @@ class CategoryController extends Controller
         ]));
 
         if ($category->isClean()) {
-            return response()->json([
-                'Error' => 'You need to specify a different value to update',
-                'code' => 422
-            ], 422);
+            return $this->errorResponse('You need to specify a different value to update', 422);
         }
 
         $category->save();
