@@ -88,7 +88,7 @@ class UsersTest extends TestCase
         $user = User::factory()->times(5)->create();
 
         $this->assertDatabaseHas('users', [
-            'name' => $user[0]->name,
+            'name' => strtolower($user[0]->name),
             'email' => $user[0]->email,
             'verified' => $user[0]->verified,
             'admin' => $user[0]->admin
@@ -119,7 +119,7 @@ class UsersTest extends TestCase
         $user = User::factory()->times(5)->create();
 
         $this->assertDatabaseHas('users', [
-            'name' => $user[0]->name,
+            'name' => strtolower($user[0]->name),
             'email' => $user[0]->email,
             'verified' => $user[0]->verified,
             'admin' => $user[0]->admin

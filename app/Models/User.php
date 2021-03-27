@@ -33,6 +33,21 @@ class User extends Authenticatable
         'admin',
     ];
 
+    public function setNameAttribute($name)
+    {
+        $this->attributes['name'] = strtolower($name);
+    }
+
+    public function getNameAttribute($name): string
+    {
+        return ucwords($name);
+    }
+
+    public function setEmailAttribute($email)
+    {
+        $this->attributes['email'] = strtolower($email);
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -53,17 +68,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function isVerified()
+    public function isVerified(): bool
     {
         return $this->verified == User::VERIFIED_USER;
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->admin == User::ADMIN_USER;
     }
 
-    public static function generateVerificationToken()
+    public static function generateVerificationToken(): string
     {
         return Str::random(40);
     }
