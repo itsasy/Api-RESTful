@@ -2,8 +2,9 @@
 
 namespace App\Exceptions;
 
-use App\Traits\ApiResponder;
+use App\Traits\ApiCustomExceptions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -11,7 +12,7 @@ use Throwable;
 
 class Handler extends ExceptionHandler
 {
-    use ApiResponder;
+    use ApiCustomExceptions;
 
     /**
      * A list of the exception types that are not reported.
@@ -45,11 +46,6 @@ class Handler extends ExceptionHandler
         });
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param Throwable $e
-     * @throws Throwable
-     */
     public function render($request, Throwable $e)
     {
         if ($e instanceof ValidationException) {
@@ -61,16 +57,14 @@ class Handler extends ExceptionHandler
             return $this->errorResponse("Does not exists any {$modelName} with the specified identification", 404);
         }
 
-        return parent::render($request, $e);
-    }
+        if ($e instanceof QueryException) {
+            $code = $e->errorInfo[1];
+            // The code 19 is for sqlite | code 1451 is for mysql
+            if ($code == 19 || $code == 1451) {
+                return $this->errorResponse('Cannot remove this resource permanently. It is related with any other resource.', 409);
+            }
+        }
 
-    /**
-     * @param ValidationException $e
-     * @param \Illuminate\Http\Request $request
-     */
-    protected function convertValidationExceptionToResponse(ValidationException $e, $request)
-    {
-        $errors = $e->validator->errors()->getMessages();
-        return $this->errorResponse($errors, 422);
+        return parent::render($request, $e);
     }
 }

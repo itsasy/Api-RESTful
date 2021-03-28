@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\User;
 
+use App\Models\Product;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -166,7 +167,7 @@ class UsersTest extends TestCase
             'admin' => $user[0]->admin
         ]);
 
-        $response = $this->deleteJson(route('users.update', 1));
+        $response = $this->deleteJson(route('users.destroy', 1));
 
         $this->assertDatabaseMissing('users', [
             'id' => $user[0]->id
@@ -175,4 +176,34 @@ class UsersTest extends TestCase
         $response->assertStatus(204);
 
     }
+
+    /** @test */
+
+    public function cannot_delete_an_user_related()
+    {
+        $user = User::factory()->times(5)->create();
+
+        $product = Product::factory()->create(['seller_id' => $user[0]->id]);
+
+        $this->assertDatabaseHas('users', [
+            'name' => strtolower($user[0]->name),
+            'email' => $user[0]->email,
+            'verified' => $user[0]->verified,
+            'admin' => $user[0]->admin
+        ]);
+
+        $response = $this->deleteJson(route('users.destroy', $user[0]->id));
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user[0]->id
+        ])->assertDatabaseHas('products', [
+            'id' => $product->id
+        ]);
+
+        $response->assertStatus(409)->assertSee([
+            'error' => 'Cannot remove this resource permanently. It is related with any other resource.'
+        ]);
+    }
+
+
 }
