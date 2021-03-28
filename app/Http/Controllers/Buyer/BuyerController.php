@@ -30,9 +30,6 @@ class BuyerController extends Controller
      */
     public function show(Buyer $buyer)
     {
-        $buyer->has('transactions')
-            ->findOrFail($buyer->id);
-
         return $this->showOne($buyer, 200);
     }
 

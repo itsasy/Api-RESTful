@@ -31,8 +31,6 @@ class SellerController extends Controller
      */
     public function show(Seller $seller)
     {
-        $seller = Seller::has('products')->findOrFail($seller['id']);
-
         return $this->showOne($seller, 200);
     }
 
