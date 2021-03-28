@@ -112,6 +112,18 @@ class UsersTest extends TestCase
 
     /** @test */
 
+    public function cannot_see_an_unknown_user()
+    {
+        $response = $this->getJson(route('users.show', 2000));
+
+        $response->assertSee([
+            'error' => 'Does not exists any user with the specified identification',
+            'code' => 404,
+        ]);
+    }
+
+    /** @test */
+
     public function can_update_an_user()
     {
         $user = User::factory()->times(5)->create();
