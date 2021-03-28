@@ -4,13 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     const AVARIABLE_PRODUCT = '1';
     const UNAVARIABLE_PRODUCT = '0';
+
+    protected $dates = ['delete_at'];
 
     protected $fillable = [
         'name',
