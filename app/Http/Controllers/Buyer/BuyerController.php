@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers\Buyer;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Models\Buyer;
-use App\Traits\ApiResponder;
 
-class BuyerController extends Controller
+class BuyerController extends ApiController
 {
-    use ApiResponder;
-
     /**
      * Display a listing of the resource.
      *

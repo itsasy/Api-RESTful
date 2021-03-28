@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Models\Product;
-use App\Traits\ApiResponder;
 
-class ProductController extends Controller
+class ProductController extends ApiController
 {
-    use ApiResponder;
-
     /**
      * Display a listing of the resource.
      *
