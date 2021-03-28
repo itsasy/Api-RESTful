@@ -2,11 +2,16 @@
 
 namespace App\Exceptions;
 
+use App\Traits\ApiResponder;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
+
 
 class Handler extends ExceptionHandler
 {
+    use ApiResponder;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -38,4 +43,29 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param Throwable $e
+     * @throws Throwable
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof ValidationException) {
+            return $this->convertValidationExceptionToResponse($e, $request);
+        }
+
+        return parent::render($request, $e);
+    }
+
+    /**
+     * @param ValidationException $e
+     * @param \Illuminate\Http\Request $request
+     */
+    protected function convertValidationExceptionToResponse(ValidationException $e, $request)
+    {
+        $errors = $e->validator->errors()->getMessages();
+        return $this->errorResponse($errors, 422);
+    }
+
 }
